@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         board = new Board(COLS, ROWS);
         playingView = findViewById(R.id.board_view);
-        buildCells();
+        buildPlayingBoard();
 
 
         ImageButton button1 = findViewById(R.id.col_0);
@@ -54,29 +54,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         viewHolder = new ViewHolder();
         viewHolder.turnIndicatorImageView = (ImageView) findViewById(R.id.turn_indicator_image_view);
-        viewHolder.turnIndicatorImageView.setImageResource(token());
+        viewHolder.turnIndicatorImageView.setImageResource(turnIndicator());
     }
     @Override
     public void onClick(View v){
         switch (v.getId()){
             case R.id.col_0:
-                move(0);
+                dropToken(0);
                 break;
             case R.id.col_1:
-                move(1);
+                dropToken(1);
                 break;
             case R.id.col_2:
-                move(2);
+                dropToken(2);
                 break;
             case R.id.col_3:
-                move(3);
+                dropToken(3);
                 break;
 
         }
     }
 
 
-    private void buildCells() {
+    private void buildPlayingBoard() {
         playingBoard = new ImageView[ROWS][COLS];
         for (int r=0; r< ROWS; r++) {
             ViewGroup row = (ViewGroup) ((ViewGroup) playingView).getChildAt(r);
@@ -96,44 +96,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return -1;
         return col;
     }
-    public void createGameBoard() {
-        ViewGroup rows;
-        ImageView cols;
-        playingBoard = new ImageView[ROWS][COLS];
-        for (int i = 0; i < ROWS; i++) {
-            rows = (ViewGroup) ((ViewGroup) playingView).getChildAt(i);
-            rows.setClipChildren(false);
-            for (int j = 0; j < COLS; j++) {
-                cols = (ImageView) rows.getChildAt(j);
-
-                playingBoard[i][j] = cols;
-            }
-        }
-    }
 
 
-    private int token(){
+    private int turnIndicator(){
         if (board.getTurn() == 1){
             return R.drawable.red_token;
         }
         return R.drawable.black;
     }
 
-    private void move(int col) {
+    private void dropToken(int col) {
         int turn = board.getTurn();
         int row = board.openRow(col);
         int token = turn;
-        if (!board.putToken(token, col)){
-            return;
-        }
-        final ImageView cell = playingBoard[row][col];
-        float move = -(cell.getHeight() * row + cell.getHeight() + 8);
-        cell.setY(move);
-        cell.setImageResource(token());
-        TranslateAnimation anim = new TranslateAnimation(0, 0, 0, Math.abs(move));
-        anim.setDuration(850);
-        anim.setFillAfter(true);
-        cell.startAnimation(anim);
+        animation(row, col);
+        board.putToken(row, col);
         if (board.winner) {
             win();
         } else {
@@ -143,6 +120,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void win(){
 
+    }
+
+    private void animation(int row, int col){
+        final ImageView cell = playingBoard[row][col];
+        float move = -(cell.getHeight() * row + cell.getHeight() + 15);
+        cell.setY(move);
+        cell.setImageResource(turnIndicator());
+        TranslateAnimation anim = new TranslateAnimation(0, 0, 0, Math.abs(move));
+        anim.setDuration(850);
+        anim.setFillAfter(true);
+        cell.startAnimation(anim);
     }
 
 

@@ -6,7 +6,7 @@ public class Board {
     private int gridMaxHeight;
     private int totalMoves;
     private int totalPlayers;
-    private int turn =1;
+    private int turn;
     public boolean winner = false;
 
 
@@ -18,6 +18,7 @@ public class Board {
         numCol = square;
         numRow = square;
         board = new int[numCol][numRow];
+        turn = 1;
     }
 
     /**
@@ -30,6 +31,7 @@ public class Board {
         numCol = col;
         numRow = row;
         board = new int[numCol][numRow];
+        turn = 1;
     }
 
     public void switchTurn(){
@@ -75,14 +77,12 @@ public class Board {
         return true;
     }
 
-    public boolean putToken(int token, int col){
-        int row = openRow(col);
+    public boolean putToken(int row, int col){
         if (row == -1 || !isValid(col, row))
             return false;
 
-        board[row][col] = token;
-        checkWin(token, col, row);
-        switchTurn();
+        board[col][row] = turn;
+        checkWin(turn, col, row);
         return true;
     }
 
