@@ -149,7 +149,7 @@ public class Board {
                         }
                     }
 
-                    // Check grid up to down
+                    // Check grid down
                     if (i + 2 < maxDown) {
                         if (board[i + 1][j] == player && board[i + 2][j] == player && board[i + 3][j] == player) {
                             winner = true;

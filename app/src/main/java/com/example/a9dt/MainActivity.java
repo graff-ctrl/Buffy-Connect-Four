@@ -3,6 +3,7 @@ package com.example.a9dt;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -21,8 +22,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Board board;
@@ -33,6 +41,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RequestQueue mQueue;
     private Human human;
     private Computer computer;
+    private String baseUrl = "https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?moves=";
+    private String query = "[]";
+    private String url;
+    Handler handler;
+
 
     private class ViewHolder {
         public ImageView turnIndicatorImageView;
@@ -43,8 +56,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         board = new Board(COLS, ROWS);
         playingView = findViewById(R.id.board_view);
-        mQueue = Volley.newRequestQueue(this);
         buildPlayingBoard();
+        human = new Human("human");
+        human.setPlayerToken(1);
+        handler = new Handler();
+
+        if (human.getPlayerToken() == 2)
+        {
+            buildQuery();
+            serviceRequest();
+        }
+
+
 
         //Creating buttons types for the row of buttons at the bottom of the board
         //to select the column.
@@ -73,19 +96,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.col_0:
                 dropToken(0);
-                computerMove();
+                appendHumanPlayerToQuery(0);
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (!board.gameOver())
+                            serviceRequest();
+                    }
+                }, 2000);
+
                 break;
             case R.id.col_1:
                 dropToken(1);
-                computerMove();
+                appendHumanPlayerToQuery(1);
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (!board.gameOver())
+                            serviceRequest();
+                    }
+                }, 2000);
                 break;
             case R.id.col_2:
                 dropToken(2);
-                computerMove();
+                appendHumanPlayerToQuery(2);
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (!board.gameOver())
+                            serviceRequest();
+                    }
+                }, 2000);
                 break;
             case R.id.col_3:
                 dropToken(3);
-                computerMove();
+                appendHumanPlayerToQuery(3);
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (!board.gameOver())
+                            serviceRequest();
+                    }
+                }, 2000);
                 break;
 
         }
@@ -135,13 +191,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void computerMove(){
+    private void computerMove(int x, String moves){
 
+        if(board.openRow(x) < 0){
+            serviceRequest();
+        }
+        else
+            dropToken(x);
+            query = moves;
+            buildQuery();
+
+
+    }
+
+    private void buildQuery(){
+
+        StringBuilder q = new StringBuilder();
+
+        q.append(baseUrl);
+        q.append(query);
+        url = q.toString();
+
+    }
+
+    private void appendHumanPlayerToQuery (int x){
+
+        StringBuilder q = new StringBuilder();
+        q.append(query);
+
+        if (board.numMoves == 1){
+            q.replace(q.length()-1, q.length(), "");
+            q.append(x);
+            q.append("]");
+        }
+        else {
+            q.replace(q.length() - 1, q.length(), ",");
+            q.append(x);
+            q.append("]");
+        }
+        query = q.toString();
+        buildQuery();
+    }
+
+    private void serviceRequest(){
+
+        mQueue = Volley.newRequestQueue(this);
+
+        //String url = "https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?moves=[2]";
+
+        boolean valid = false;
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    int col = response.getInt(response.length() - 1);
+                    if (board.openRow(col) < 0)
+                        serviceRequest();
+                    else
+                        computerMove(col, response.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String resp = response.toString();
+                Log.e("RESPONSE", response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.print("Made it to failure");
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(jsonArrayRequest);
     }
 
     private void win(){
 
     }
+
 
 
     private void animation(int row, int col){
