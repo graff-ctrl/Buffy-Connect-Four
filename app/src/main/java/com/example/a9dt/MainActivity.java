@@ -21,12 +21,16 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Board board;
     private static int ROWS = 4, COLS = 4;
     private ImageView[][] playingBoard;
     private View playingView;
     private ViewHolder viewHolder;
+    private RequestQueue mQueue;
     private Human human;
     private Computer computer;
 
@@ -39,14 +43,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         board = new Board(COLS, ROWS);
         playingView = findViewById(R.id.board_view);
+        mQueue = Volley.newRequestQueue(this);
         buildPlayingBoard();
 
-
+        //Creating buttons types for the row of buttons at the bottom of the board
+        //to select the column.
         ImageButton button1 = findViewById(R.id.col_0);
         ImageButton button2 = findViewById(R.id.col_1);
         ImageButton button3 = findViewById(R.id.col_2);
         ImageButton button4 = findViewById(R.id.col_3);
 
+        //Setting listener.
         button1.setOnClickListener((View.OnClickListener) this);
         button2.setOnClickListener((View.OnClickListener) this);
         button3.setOnClickListener((View.OnClickListener) this);
@@ -56,26 +63,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewHolder.turnIndicatorImageView = (ImageView) findViewById(R.id.turn_indicator_image_view);
         viewHolder.turnIndicatorImageView.setImageResource(turnIndicator());
     }
+
+    /**
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v){
         switch (v.getId()){
             case R.id.col_0:
                 dropToken(0);
+                computerMove();
                 break;
             case R.id.col_1:
                 dropToken(1);
+                computerMove();
                 break;
             case R.id.col_2:
                 dropToken(2);
+                computerMove();
                 break;
             case R.id.col_3:
                 dropToken(3);
+                computerMove();
                 break;
 
         }
     }
 
-
+    /**
+     * Function for building the view of the playing board.
+     */
     private void buildPlayingBoard() {
         playingBoard = new ImageView[ROWS][COLS];
         for (int r=0; r< ROWS; r++) {
@@ -88,39 +106,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-    private int colAtX(float x) {
-        float colWidth = playingBoard[0][0].getWidth();
-        int col = (int) x / (int) colWidth;
-        if (col < 0 || col > COLS)
-            return -1;
-        return col;
+    private void setTurnIndictor(){
+        if (board.getTurn() == 1)
+            viewHolder.turnIndicatorImageView.setImageResource(R.drawable.red_token);
+        else
+            viewHolder.turnIndicatorImageView.setImageResource(R.drawable.black_token);
     }
-
-
     private int turnIndicator(){
         if (board.getTurn() == 1){
             return R.drawable.red_token;
         }
-        return R.drawable.black;
+        return R.drawable.black_token;
     }
 
     private void dropToken(int col) {
-        int turn = board.getTurn();
+        if (board.gameOver())
+            return;
         int row = board.openRow(col);
-        int token = turn;
-        animation(row, col);
+        if (row == -1)
+            return;
         board.putToken(row, col);
+        animation(row, col);
         if (board.winner) {
             win();
         } else {
             board.switchTurn();
+            setTurnIndictor();
         }
+    }
+
+    private void computerMove(){
+
     }
 
     private void win(){
 
     }
+
 
     private void animation(int row, int col){
         final ImageView cell = playingBoard[row][col];

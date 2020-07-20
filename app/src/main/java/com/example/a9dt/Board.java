@@ -4,10 +4,13 @@ public class Board {
     private int numCol, numRow;
     private int [][] board;
     private int gridMaxHeight;
-    private int totalMoves;
+    public int [] moves;
     private int totalPlayers;
     private int turn;
+    private int totalMoves;
+    public int numMoves;
     public boolean winner = false;
+
 
 
     /**
@@ -19,6 +22,9 @@ public class Board {
         numRow = square;
         board = new int[numCol][numRow];
         turn = 1;
+        totalMoves = numCol * numRow;
+        moves = new int [totalMoves];
+        numMoves = 0;
     }
 
     /**
@@ -32,6 +38,9 @@ public class Board {
         numRow = row;
         board = new int[numCol][numRow];
         turn = 1;
+        totalMoves = numCol * numRow;
+        moves = new int [totalMoves];
+        numMoves = 0;
     }
 
     public void switchTurn(){
@@ -82,7 +91,10 @@ public class Board {
             return false;
 
         board[col][row] = turn;
+        moves[numMoves] = col;
+        numMoves++;
         checkWin(turn, col, row);
+
         return true;
     }
 
@@ -100,7 +112,7 @@ public class Board {
         if (col - 3 < 0)
             maxLeft = 0;
         else
-            maxLeft = row - 3;
+            maxLeft = col - 3;
 
 
         //Sets right edge of grid
@@ -168,8 +180,13 @@ public class Board {
     }
 
     public void restart() {
+        winner = false;
         turn = 1;
-        for (int i = 0; i < board.length; i ++){
+        int i;
+        for (i = 0; i < moves.length; i++)
+            moves[i] = 0;
+
+        for (i = 0; i < board.length; i ++){
             for (int j = 0; j < board[i].length; i++){
                 board[i][j] = 0;
             }
