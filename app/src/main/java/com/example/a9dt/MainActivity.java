@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static int ROWS = 4, COLS = 4;
     private ImageView[][] playingBoard;
     private View playingView;
+    private View buttonToggle;
+    private View textToggle;
     private ViewHolder viewHolder;
     private RequestQueue mQueue;
     private Human human;
@@ -58,14 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         playingView = findViewById(R.id.board_view);
         buildPlayingBoard();
         human = new Human("human");
-        human.setPlayerToken(1);
+        computer = new Computer("computer_1");
         handler = new Handler();
 
-        if (human.getPlayerToken() == 2)
-        {
-            buildQuery();
-            serviceRequest();
-        }
 
 
 
@@ -76,15 +73,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ImageButton button3 = findViewById(R.id.col_2);
         ImageButton button4 = findViewById(R.id.col_3);
 
+        Button first = (Button) findViewById(R.id.first_player);
+        Button second = (Button) findViewById(R.id.second_player);
+        Button replay = (Button) findViewById(R.id.replay);
+        buttonToggle = findViewById(R.id.replay);
+        buttonToggle.setVisibility(View.GONE);
+
         //Setting listener.
         button1.setOnClickListener((View.OnClickListener) this);
         button2.setOnClickListener((View.OnClickListener) this);
         button3.setOnClickListener((View.OnClickListener) this);
         button4.setOnClickListener((View.OnClickListener) this);
+        first.setOnClickListener((View.OnClickListener) this);
+        second.setOnClickListener((View.OnClickListener) this);
+        replay.setOnClickListener((View.OnClickListener) this);
 
-        viewHolder = new ViewHolder();
-        viewHolder.turnIndicatorImageView = (ImageView) findViewById(R.id.turn_indicator_image_view);
-        viewHolder.turnIndicatorImageView.setImageResource(turnIndicator());
+        //moves();
+
+        //viewHolder = new ViewHolder();
+        //viewHolder.turnIndicatorImageView = (ImageView) findViewById(R.id.turn_indicator_image_view);
+        //viewHolder.turnIndicatorImageView.setImageResource(turnIndicator());
     }
 
     /**
@@ -95,56 +103,97 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v){
         switch (v.getId()){
             case R.id.col_0:
+                if (board.openRow(0) < 0){
+                    break;
+                }
                 dropToken(0);
                 appendHumanPlayerToQuery(0);
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (!board.gameOver())
-                            serviceRequest();
-                    }
-                }, 2000);
-
+                if (!board.gameOver())
+                    serviceRequest();
                 break;
+
             case R.id.col_1:
+                if (board.openRow(1) < 0){
+                    break;
+                }
                 dropToken(1);
                 appendHumanPlayerToQuery(1);
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (!board.gameOver())
-                            serviceRequest();
-                    }
-                }, 2000);
+                if (!board.gameOver())
+                    serviceRequest();
                 break;
             case R.id.col_2:
+                if (board.openRow(2) < 0){
+                    break;
+                }
                 dropToken(2);
                 appendHumanPlayerToQuery(2);
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (!board.gameOver())
-                            serviceRequest();
-                    }
-                }, 2000);
+                if (!board.gameOver())
+                    serviceRequest();
                 break;
             case R.id.col_3:
+                if (board.openRow(3) < 0){
+                    break;
+                }
                 dropToken(3);
                 appendHumanPlayerToQuery(3);
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (!board.gameOver())
-                            serviceRequest();
-                    }
-                }, 2000);
+                if (!board.gameOver())
+                    serviceRequest();
                 break;
 
+            case R.id.first_player:
+
+                human.setPlayerToken(1);
+                computer.setPlayerToken(2);
+                buttonToggle = findViewById(R.id.first_player);
+                buttonToggle.setVisibility(View.GONE);
+                buttonToggle = findViewById(R.id.second_player);
+                buttonToggle.setVisibility(View.GONE);
+                buttonToggle = findViewById(R.id.replay);
+                buttonToggle.setVisibility(View.VISIBLE);
+
+
+                break;
+
+            case R.id.second_player:
+                computer.setPlayerToken(1);
+                human.setPlayerToken(2);
+                buttonToggle = findViewById(R.id.first_player);
+                buttonToggle.setVisibility(View.GONE);
+                buttonToggle = findViewById(R.id.second_player);
+                buttonToggle.setVisibility(View.GONE);
+                buttonToggle = findViewById(R.id.replay);
+                buttonToggle.setVisibility(View.VISIBLE);
+                buildQuery();
+                serviceRequest();
+
+                break;
+            case R.id.replay:
+
+                buttonToggle = findViewById(R.id.replay);
+                buttonToggle.setVisibility(View.GONE);
+                buttonToggle = findViewById(R.id.first_player);
+                buttonToggle.setVisibility(View.VISIBLE);
+                buttonToggle = findViewById(R.id.second_player);
+                buttonToggle.setVisibility(View.VISIBLE);
+                restart();
+
+
+                break;
+
+
         }
+    }
+
+    private void moves (){
+        dropToken(3);
+        dropToken(1);
+        dropToken(2);
+        dropToken(0);
+        dropToken(3);
+        dropToken(2);
+        dropToken(1);
+        dropToken(0);
+        dropToken(2);
     }
 
     /**
@@ -162,12 +211,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+
     private void setTurnIndictor(){
         if (board.getTurn() == 1)
             viewHolder.turnIndicatorImageView.setImageResource(R.drawable.red_token);
         else
             viewHolder.turnIndicatorImageView.setImageResource(R.drawable.black_token);
     }
+
     private int turnIndicator(){
         if (board.getTurn() == 1){
             return R.drawable.red_token;
@@ -185,22 +237,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         animation(row, col);
         if (board.winner) {
             win();
-        } else {
+        }else if (board.draw())
+        {
+            draw();
+        }
+        else {
             board.switchTurn();
-            setTurnIndictor();
+            //setTurnIndictor();
         }
     }
 
-    private void computerMove(int x, String moves){
+    private void computerMove(final int x, String moves){
 
-        if(board.openRow(x) < 0){
-            serviceRequest();
-        }
-        else
             dropToken(x);
             query = moves;
             buildQuery();
-
 
     }
 
@@ -219,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         StringBuilder q = new StringBuilder();
         q.append(query);
 
-        if (board.numMoves == 1){
+        if (board.numMoves < 2){
             q.replace(q.length()-1, q.length(), "");
             q.append(x);
             q.append("]");
@@ -271,6 +322,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void win(){
+
+        String humanWin = "You are the winner!";
+        String compWin = "Computer is the winner";
+        TextView winText = (TextView) findViewById(R.id.winner_text);
+        if (human.getPlayerToken() == board.getTurn())
+            winText.setText(humanWin);
+        else
+            winText.setText(compWin);
+        buttonToggle = findViewById(R.id.replay);
+        buttonToggle.setVisibility(View.VISIBLE);
+
+    }
+
+    private void draw()
+    {
+        String winner = "DRAW!!!!";
+        TextView winText = (TextView) findViewById(R.id.winner_text);
+        winText.setText(winner);
+        buttonToggle = findViewById(R.id.replay);
+        buttonToggle.setVisibility(View.VISIBLE);
+    }
+
+    private void restart() {
+        board.restart();
+        query = "[]";
+        textToggle = findViewById(R.id.winner_text);
+        TextView winText = (TextView) findViewById(R.id.winner_text);
+        winText.setText("");
+
+
+        buildPlayingBoard();
+        for (int r=0; r< ROWS; r++) {
+            ViewGroup row = (ViewGroup) ((ViewGroup) playingView).getChildAt(r);
+            row.setClipChildren(false);
+            for (int c = 0; c < COLS; c++) {
+                ImageView imageView = (ImageView) row.getChildAt(c);
+                imageView.setImageResource(android.R.color.transparent);
+                playingBoard[r][c] = imageView;
+            }
+        }
 
     }
 
