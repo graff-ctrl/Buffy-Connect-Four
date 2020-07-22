@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String baseUrl = "https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?moves=";
     private String query = "[]";
     private String url;
-    Handler handler;
+    private Handler handler;
 
 
     private class ViewHolder {
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         human = new Human("human");
         computer = new Computer("computer_1");
         handler = new Handler();
+        mQueue = Volley.newRequestQueue(this);
 
 
 
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      *
-     * @param v
+     * @param v view
      */
     @Override
     public void onClick(View v){
@@ -141,13 +142,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.first_player:
-
+                // Set players tokens
                 human.setPlayerToken(1);
                 computer.setPlayerToken(2);
+
+                //Remove buttons
                 buttonToggle = findViewById(R.id.first_player);
                 buttonToggle.setVisibility(View.GONE);
                 buttonToggle = findViewById(R.id.second_player);
                 buttonToggle.setVisibility(View.GONE);
+
+                //Make button visable.
                 buttonToggle = findViewById(R.id.replay);
                 buttonToggle.setVisibility(View.VISIBLE);
 
@@ -155,29 +160,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.second_player:
+                //Set players tokens.
                 computer.setPlayerToken(1);
                 human.setPlayerToken(2);
+
+                //Hide Buttons after click
                 buttonToggle = findViewById(R.id.first_player);
                 buttonToggle.setVisibility(View.GONE);
                 buttonToggle = findViewById(R.id.second_player);
                 buttonToggle.setVisibility(View.GONE);
+
+                //Make Replay button visable on click.
                 buttonToggle = findViewById(R.id.replay);
                 buttonToggle.setVisibility(View.VISIBLE);
+
                 buildQuery();
-                serviceRequest();
+                serviceRequest();   //Initial service request for humnan set as player 2.
 
                 break;
             case R.id.replay:
 
+                //Remove button after click
                 buttonToggle = findViewById(R.id.replay);
                 buttonToggle.setVisibility(View.GONE);
+
+                // Make buttons visable after click
                 buttonToggle = findViewById(R.id.first_player);
                 buttonToggle.setVisibility(View.VISIBLE);
                 buttonToggle = findViewById(R.id.second_player);
                 buttonToggle.setVisibility(View.VISIBLE);
+
+                //Restart Game
                 restart();
-
-
                 break;
 
 
@@ -275,6 +289,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Function to append the human players move to the query sting that is sent to
+     * endpoint.
+     * @param x
+     */
     private void appendHumanPlayerToQuery (int x){
 
         StringBuilder q = new StringBuilder();
@@ -294,11 +313,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buildQuery();
     }
 
+    /**
+     * Function to call service endpoint.
+     */
     private void serviceRequest(){
 
-        mQueue = Volley.newRequestQueue(this);
-
-        //String url = "https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?moves=[2]";
 
         boolean valid = false;
 
@@ -331,6 +350,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mQueue.add(jsonArrayRequest);
     }
 
+    /**
+     * Funtion for when a win is detected on the board.
+     */
     private void win(){
 
         String humanWin = "You are the winner!";
@@ -345,6 +367,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Function that displays text when there is a draw and makes replay button visable.
+     */
     private void draw()
     {
         String winner = "DRAW!!!!";
@@ -354,6 +379,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonToggle.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Function to reset the game play.
+     */
     private void restart() {
         board.restart();
         query = "[]";
@@ -361,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView winText = (TextView) findViewById(R.id.winner_text);
         winText.setText("");
 
-
+        // Rebuild playing board image.
         buildPlayingBoard();
         for (int r=0; r< ROWS; r++) {
             ViewGroup row = (ViewGroup) ((ViewGroup) playingView).getChildAt(r);
@@ -375,8 +403,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
-
+    /**
+     * Function for coin drop animation in board.
+     * @param row
+     * @param col
+     */
     private void animation(int row, int col){
         final ImageView cell = playingBoard[row][col];
         float move = -(cell.getHeight() * row + cell.getHeight() + 15);

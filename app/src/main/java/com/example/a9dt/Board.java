@@ -1,5 +1,11 @@
 package com.example.a9dt;
 
+/**
+ * Board class for connect 4.
+ *
+ * @version 1.0
+ * @author Andrew Graff
+ */
 public class Board {
     //Private variables.
     private int numCol, numRow; // Variables for number of rows and columns.
