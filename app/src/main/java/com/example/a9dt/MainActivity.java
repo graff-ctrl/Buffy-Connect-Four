@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        board = new Board(COLS, ROWS);
+        board = new Board(ROWS, COLS);
         playingView = findViewById(R.id.board_view);
         buildPlayingBoard();
         human = new Human("human");
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         second.setOnClickListener((View.OnClickListener) this);
         replay.setOnClickListener((View.OnClickListener) this);
 
-        //moves();
+        moves();
 
         //viewHolder = new ViewHolder();
         //viewHolder.turnIndicatorImageView = (ImageView) findViewById(R.id.turn_indicator_image_view);
@@ -186,14 +186,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void moves (){
         dropToken(3);
+        dropToken(0);
+
+        dropToken(2);
+        dropToken(2);
+
+        dropToken(1);
+        dropToken(1);
+
+        dropToken(0);
+        dropToken(2);
+
         dropToken(1);
         dropToken(2);
+
         dropToken(0);
-        dropToken(3);
-        dropToken(2);
         dropToken(1);
+
         dropToken(0);
-        dropToken(2);
     }
 
     /**

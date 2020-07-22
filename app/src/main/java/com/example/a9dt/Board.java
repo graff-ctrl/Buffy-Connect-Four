@@ -20,7 +20,7 @@ public class Board {
     public Board(int square) {
         numCol = square;
         numRow = square;
-        board = new int[numCol][numRow];
+        board = new int[numRow][numCol];
         turn = 1;
         totalMoves = numCol * numRow;
         moves = new int [totalMoves];
@@ -36,7 +36,7 @@ public class Board {
 
         numCol = col;
         numRow = row;
-        board = new int[numCol][numRow];
+        board = new int[numRow][numCol];
         turn = 1;
         totalMoves = numCol * numRow;
         moves = new int [totalMoves];
@@ -245,7 +245,7 @@ public class Board {
     public boolean draw(){
 
         //Finds first instace of empty index at top row (row 0).
-        for (int j = 0; j < numCol -1; j++){
+        for (int j = 0; j < numCol; j++){
             if (board[0][j] == 0)
                 return false;
         }
