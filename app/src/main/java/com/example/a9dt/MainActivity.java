@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         board.putToken(row, col);
         animation(row, col);
-        if (board.winner) {
+        if (board.getWinner()) {
             win();
         }else if (board.draw())
         {

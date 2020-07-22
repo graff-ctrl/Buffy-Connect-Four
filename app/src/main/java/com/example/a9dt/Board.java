@@ -1,20 +1,21 @@
 package com.example.a9dt;
 
 public class Board {
-    private int numCol, numRow;
-    private int [][] board;
-    private int gridMaxHeight;
-    public int [] moves;
-    private int totalPlayers;
-    private int turn;
-    private int totalMoves;
-    public int numMoves;
-    public boolean winner = false;
+    //Private variables.
+    private int numCol, numRow; // Variables for number of rows and columns.
+    private int [][] board; //Board Array
+    private int [] moves; //Array of logged moves.
+    private int turn;   // Varible to indicate turn;
+    private int totalMoves; // Size variable for []moves.
+    private boolean winner = false;  // Boolean for game winner
 
 
+    //Public variables
+    public int numMoves;    // Counter variable for []moves.
 
     /**
-     * Constructor for board with same width and height (square box).
+     * Constructor for board with same width and height (square box). Assuming passing one variable
+     * means a square box.
      * @param
      */
     public Board(int square) {
@@ -43,6 +44,9 @@ public class Board {
         numMoves = 0;
     }
 
+    /**
+     * Function to toggle player turn between 1 and 2
+     */
     public void switchTurn(){
         if (turn == 1){
             turn = 2;
@@ -52,20 +56,36 @@ public class Board {
         }
     }
 
+    /**
+     * Function to return which player's turn is currently is.
+     * @return turn
+     */
     public int getTurn(){
         return turn;
     }
 
-
+    /**
+     * Setter function for number of rows
+     * @param numRow
+     */
     public void setNumRow(int numRow) {
         this.numRow = numRow;
     }
 
+    /**
+     * Setter function for number of columns
+     * @param numCol
+     */
     public void setNumCol(int numCol){
         this.numCol = numCol;
     }
 
-
+    /**
+     * Function takes in the column number and returns the index of the last available row in that
+     * column.
+     * @param col
+     * @return row number or -1 if row is full.
+     */
     public int openRow(int col) {
         for (int i = numRow - 1; i > -1; i --) {
             if (board[i][col] == 0) {
@@ -75,17 +95,12 @@ public class Board {
         return -1;
     }
 
-    public boolean isValid(int col, int row){
-        if (col > numCol - 1 || col < 0 || row > numRow || row < 0){
-            return false;
-        }
-        if (openRow(col) == -1){
-            return false;
-        }
-
-        return true;
-    }
-
+    /**
+     * Function places player token (turn) into the array, adds the column selection to the array
+     * of logged moves and increments the numMove counter. The input is then checked for a win.
+     * @param row
+     * @param col
+     */
     public void putToken(int row, int col){
         board[row][col] = turn;
         moves[numMoves] = col;
@@ -94,6 +109,12 @@ public class Board {
 
     }
 
+    /**
+     * Function to traverse the area of the last token dropped onto the board for a possible win.
+     * @param player turn variable
+     * @param row row of token
+     * @param col column of token
+     */
     public void checkWin(int player, int row, int col) {
 
         // Check max height. Height is in descending order due to row numbering of 2D array.
@@ -133,7 +154,6 @@ public class Board {
 
         //Check Left to Right of possible win in grid.
         for (int j = maxLeft; j <= maxRight; j++){
-            //if (board[row][j] == player)
             if (j + 3 <= maxRight)
             {
                 if(board[row][j] == player && j + 3 <= maxRight && board[row][j + 1] == player &&
@@ -143,9 +163,8 @@ public class Board {
                 }
             }
         }
-
+        // Check Up to down for possible win.
         for (int i = maxUp; i <= maxDown; i++){
-            //if (board[i][col] == player)
             if (i + 3 <= maxDown)
             {
                 int check = board[i][col];
@@ -156,7 +175,7 @@ public class Board {
                 }
             }
         }
-
+        // Check diagonally from top left to bottom right for possible win.
         for (int i = maxUp; i <= maxDown; i++) {
             for (int j = maxLeft; j <= maxRight; j++) {
 
@@ -171,7 +190,7 @@ public class Board {
                 }
             }
         }
-
+        // Check diagonally from bottom left to top right for possible win.
         for (int i = maxDown; i >= maxUp; i--) {
             for (int j = maxLeft; j <= maxRight; j++) {
 
@@ -182,53 +201,16 @@ public class Board {
                         winner = true;
                     }
                 }
-
-
-            }
-
-        }
-
-
-       /* for (i = maxUp; i <= maxDown; i++) {
-            for (j = maxLeft; j <= maxRight; j++) {
-
-                if (board[i][j] == player) {
-
-                    //Check grid left to right
-                    if (j + 3 <= maxRight) {
-                        if (board[i][j + 1] == player && board[i][j + 2] == player && board[i][j + 3] == player) {
-                            winner = true;
-                            return true;
-                        }
-                    }
-
-                    // Check grid down
-                    if (i + 3 <= maxDown) {
-                        if (board[i + 1][j] == player && board[i + 2][j] == player && board[i + 3][j] == player) {
-                            winner = true;
-                            return true;
-                        }
-                    }
-
-                    //Check Diagonally left-top to right-bottom
-                    if (i <= maxUp && j <= maxRight + 3){
-                        if (board[i + 1][j + 1] == player && board[i + 2][j + 2] == player && board[i + 3][j + 3] == player){
-                            winner = true;
-                            return true;
-                        }
-                    }
-
-                    // Check Diagonally right-top to left-bottom
-                    if (i <= maxDown - 3 && j > maxLeft + 2){
-                        if (board[i + 1][j - 1]== player && board[i + 2][j - 2]== player && board[i + 3][j - 3]== player){
-                            winner = true;
-                            return true;
-                        }
-                    }
-                }
             }
         }
-*/
+    }
+
+    /**
+     * Function returns boolean of winner
+     * @return winner
+     */
+    public boolean getWinner(){
+        return winner;
     }
 
     public void restart() {
@@ -242,6 +224,11 @@ public class Board {
         }
     }
 
+    /**
+     * Function check board for draw by search the top row [0] and returns true if full and false
+     * if there is still an open index.
+     * @return boolean
+     */
     public boolean draw(){
 
         //Finds first instace of empty index at top row (row 0).
@@ -252,6 +239,11 @@ public class Board {
         return true;
     }
 
+    /**
+     * Function for checking if game is over. Created assuming computer is playing and a check is
+     * needed before call.
+     * @return
+     */
     public boolean gameOver()
     {
         if(winner){
