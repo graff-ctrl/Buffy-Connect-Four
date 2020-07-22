@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         second.setOnClickListener((View.OnClickListener) this);
         replay.setOnClickListener((View.OnClickListener) this);
 
-        moves();
+        //moves();
 
         //viewHolder = new ViewHolder();
         //viewHolder.turnIndicatorImageView = (ImageView) findViewById(R.id.turn_indicator_image_view);
