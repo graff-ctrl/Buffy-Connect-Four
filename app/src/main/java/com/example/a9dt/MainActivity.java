@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String query = "[]";
     private String url;
     private Handler handler;
+    private int [] buttonlist;
 
 
     private class ViewHolder {
@@ -67,12 +68,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+
+
         //Creating buttons types for the row of buttons at the bottom of the board
         //to select the column.
         ImageButton button1 = findViewById(R.id.col_0);
         ImageButton button2 = findViewById(R.id.col_1);
         ImageButton button3 = findViewById(R.id.col_2);
         ImageButton button4 = findViewById(R.id.col_3);
+
+        buttonlist = new int[] {(R.id.col_0), (R.id.col_1), (R.id.col_2), (R.id.col_3) };
+
+
 
         Button first = (Button) findViewById(R.id.first_player);
         Button second = (Button) findViewById(R.id.second_player);
@@ -88,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         first.setOnClickListener((View.OnClickListener) this);
         second.setOnClickListener((View.OnClickListener) this);
         replay.setOnClickListener((View.OnClickListener) this);
+
+        handleButtons(false, buttonlist);
 
         //moves();
 
@@ -107,42 +116,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (board.openRow(0) < 0){
                     break;
                 }
+                handleButtons(false, buttonlist);
                 dropToken(0);
                 appendHumanPlayerToQuery(0);
                 if (!board.gameOver())
                     serviceRequest();
+                handleButtons(true, buttonlist);
                 break;
 
             case R.id.col_1:
                 if (board.openRow(1) < 0){
                     break;
                 }
+                handleButtons(false, buttonlist);
                 dropToken(1);
                 appendHumanPlayerToQuery(1);
                 if (!board.gameOver())
                     serviceRequest();
+                handleButtons(true, buttonlist);
                 break;
             case R.id.col_2:
                 if (board.openRow(2) < 0){
                     break;
                 }
+                handleButtons(false, buttonlist);
                 dropToken(2);
                 appendHumanPlayerToQuery(2);
                 if (!board.gameOver())
                     serviceRequest();
+                handleButtons(true, buttonlist);
                 break;
             case R.id.col_3:
                 if (board.openRow(3) < 0){
                     break;
                 }
+                handleButtons(false, buttonlist);
                 dropToken(3);
                 appendHumanPlayerToQuery(3);
                 if (!board.gameOver())
                     serviceRequest();
+                handleButtons(true, buttonlist);
                 break;
 
             case R.id.first_player:
                 // Set players tokens
+                handleButtons(true, buttonlist);
                 human.setPlayerToken(1);
                 computer.setPlayerToken(2);
 
@@ -157,10 +175,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttonToggle.setVisibility(View.VISIBLE);
 
 
+
                 break;
 
             case R.id.second_player:
                 //Set players tokens.
+                handleButtons(true, buttonlist);
                 computer.setPlayerToken(1);
                 human.setPlayerToken(2);
 
@@ -181,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.replay:
 
                 //Remove button after click
+                handleButtons(false, buttonlist);
                 buttonToggle = findViewById(R.id.replay);
                 buttonToggle.setVisibility(View.GONE);
 
@@ -234,6 +255,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playingBoard[r][c] = imageView;
             }
         }
+    }
+
+    private void handleButtons(boolean b , int [] arr){
+
+        View button;
+
+        for (int i = 0; i < arr.length; i++){
+
+            button = findViewById(arr[i]);
+            button.setEnabled(b);
+        }
+
     }
 
 
