@@ -11,7 +11,7 @@ This Andoird app is a simple implementation of a connect 4 game. The player choo
 
 ## Technologies
 
-This app is written and tested in Android Studio 4.0 IDE. Classes and interfaces for this app are written in Java. 
+This app is written and tested in Android Studio 4.0 IDE. Classes and interfaces for this app are written in Java. The app was run on a Pixel 2 API 30 and Pixel 3 API 30. 
 
 ## Setup
 
@@ -23,10 +23,13 @@ Download zip of 9dt, unpack and open in Android Studio.
 ### Git
 git clone https://github.com/graff-ctrl/9dt
 
-#SDK Manager
+### SDK Manager
 1. In Android Studio, select Tools -> SDK manager. 
 2. Select Android Settings -> Android SDK
 Make sure the following are selected: 
 Android 10.0+ (R)
+
+### Device
+Select Pixel 3 API 30 from devices. Compile and run. 
 
 
