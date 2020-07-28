@@ -22,7 +22,7 @@ Zip
 Download zip of 9dt, unpack and open in Android Studio
 
 Git
-git clone https://github.com/graff-ctrl/9dt
+'git clone https://github.com/graff-ctrl/9dt'
 
 SDK Manager
 1. In Android Studio, select Tools -> SDK manager. 
