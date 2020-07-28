@@ -33,13 +33,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Board board;
-    private static int ROWS = 4, COLS = 4;
-    private ImageView[][] playingBoard;
+    private Board board;    //Board class
+    private static int ROWS = 4, COLS = 4;  //Size of board
+    private ImageView[][] playingBoard; //Playing board grid
     private View playingView;
     private View buttonToggle;
     private View textToggle;
-    private ViewHolder viewHolder;
     private RequestQueue mQueue;
     private Human human;
     private Computer computer;
@@ -49,10 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Handler handler;
     private int [] buttonlist;
 
-
-    private class ViewHolder {
-        public ImageView turnIndicatorImageView;
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,30 +55,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         board = new Board(ROWS, COLS);
         playingView = findViewById(R.id.board_view);
         buildPlayingBoard();
-        human = new Human("human");
-        computer = new Computer("computer_1");
+        human = new Human("Human");
+        computer = new Computer("Computer");
         handler = new Handler();
         mQueue = Volley.newRequestQueue(this);
 
-
-
-
-
-
         //Creating buttons types for the row of buttons at the bottom of the board
-        //to select the column.
         ImageButton button1 = findViewById(R.id.col_0);
         ImageButton button2 = findViewById(R.id.col_1);
         ImageButton button3 = findViewById(R.id.col_2);
         ImageButton button4 = findViewById(R.id.col_3);
 
+        // Initialize array of play buttons
         buttonlist = new int[] {(R.id.col_0), (R.id.col_1), (R.id.col_2), (R.id.col_3) };
 
-
-
+        // Creating buttons for selecting order of play.
         Button first = (Button) findViewById(R.id.first_player);
         Button second = (Button) findViewById(R.id.second_player);
+
+        //Creating button for replay.
         Button replay = (Button) findViewById(R.id.replay);
+
+        //Toggle replay button to GONE
         buttonToggle = findViewById(R.id.replay);
         buttonToggle.setVisibility(View.GONE);
 
@@ -96,26 +89,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         second.setOnClickListener((View.OnClickListener) this);
         replay.setOnClickListener((View.OnClickListener) this);
 
+        //Set play buttons enable to false.
         handleButtons(false, buttonlist);
 
-        //moves();
-
-        //viewHolder = new ViewHolder();
-        //viewHolder.turnIndicatorImageView = (ImageView) findViewById(R.id.turn_indicator_image_view);
-        //viewHolder.turnIndicatorImageView.setImageResource(turnIndicator());
     }
 
     /**
-     *
+     * On click listener for buttons in layout.
      * @param v view
      */
     @Override
     public void onClick(View v){
         switch (v.getId()){
             case R.id.col_0:
-                if (board.openRow(0) < 0){
+                if (board.openRow(0) < 0)
                     break;
-                }
                 handleButtons(false, buttonlist);
                 dropToken(0);
                 appendHumanPlayerToQuery(0);
@@ -123,11 +111,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     serviceRequest();
                 handleButtons(true, buttonlist);
                 break;
-
             case R.id.col_1:
-                if (board.openRow(1) < 0){
+                if (board.openRow(1) < 0)
                     break;
-                }
                 handleButtons(false, buttonlist);
                 dropToken(1);
                 appendHumanPlayerToQuery(1);
@@ -136,9 +122,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 handleButtons(true, buttonlist);
                 break;
             case R.id.col_2:
-                if (board.openRow(2) < 0){
+                if (board.openRow(2) < 0)
                     break;
-                }
                 handleButtons(false, buttonlist);
                 dropToken(2);
                 appendHumanPlayerToQuery(2);
@@ -147,9 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 handleButtons(true, buttonlist);
                 break;
             case R.id.col_3:
-                if (board.openRow(3) < 0){
+                if (board.openRow(3) < 0)
                     break;
-                }
                 handleButtons(false, buttonlist);
                 dropToken(3);
                 appendHumanPlayerToQuery(3);
@@ -157,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     serviceRequest();
                 handleButtons(true, buttonlist);
                 break;
-
             case R.id.first_player:
                 // Set players tokens
                 handleButtons(true, buttonlist);
@@ -173,11 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Make button visable.
                 buttonToggle = findViewById(R.id.replay);
                 buttonToggle.setVisibility(View.VISIBLE);
-
-
-
                 break;
-
             case R.id.second_player:
                 //Set players tokens.
                 handleButtons(true, buttonlist);
@@ -196,7 +175,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 buildQuery();
                 serviceRequest();   //Initial service request for humnan set as player 2.
-
                 break;
             case R.id.replay:
 
@@ -214,31 +192,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Restart Game
                 restart();
                 break;
-
-
         }
-    }
-
-    private void moves (){
-        dropToken(3);
-        dropToken(0);
-
-        dropToken(2);
-        dropToken(2);
-
-        dropToken(1);
-        dropToken(1);
-
-        dropToken(0);
-        dropToken(2);
-
-        dropToken(1);
-        dropToken(2);
-
-        dropToken(0);
-        dropToken(1);
-
-        dropToken(0);
     }
 
     /**
@@ -257,26 +211,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * Funtion to toggle setEnabled method on array of buttons
+     * @param b boolean for setEnabled
+     * @param arr array of buttons
+     */
     private void handleButtons(boolean b , int [] arr){
-
         View button;
-
         for (int i = 0; i < arr.length; i++){
-
             button = findViewById(arr[i]);
             button.setEnabled(b);
         }
-
     }
 
-
-    private void setTurnIndictor(){
-        if (board.getTurn() == 1)
-            viewHolder.turnIndicatorImageView.setImageResource(R.drawable.red_token);
-        else
-            viewHolder.turnIndicatorImageView.setImageResource(R.drawable.black_token);
-    }
-
+    /**
+     * Function to return token corresponding to turn in game.
+     * @return id of token image
+     */
     private int turnIndicator(){
         if (board.getTurn() == 1){
             return R.drawable.red_token;
@@ -284,6 +235,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return R.drawable.black_token;
     }
 
+    /**
+     * Function to drop token onto board, call animation method, and check for win/draw and change
+     * turn.
+     * @param col column number of dropped token
+     */
     private void dropToken(int col) {
         if (board.gameOver())
             return;
@@ -294,8 +250,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         animation(row, col);
         if (board.getWinner()) {
             win();
-        }else if (board.draw())
-        {
+        }else if (board.draw()) {
             draw();
         }
         else {
@@ -304,22 +259,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * Function to drop token from service call, build query param and build full query.
+     * @param x move from service call
+     * @param moves toString Json array of moves
+     */
     private void computerMove(final int x, String moves){
-
             dropToken(x);
             query = moves;
             buildQuery();
-
     }
 
+    /**
+     * Function to build query from base URL and query paramerters.
+     */
     private void buildQuery(){
-
         StringBuilder q = new StringBuilder();
-
         q.append(baseUrl);
         q.append(query);
         url = q.toString();
-
     }
 
     /**
@@ -351,9 +309,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void serviceRequest(){
 
-
-        boolean valid = false;
-
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -365,21 +320,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         computerMove(col, response.toString());
 
                 } catch (JSONException e) {
+                    Log.e("JSON_EXCEPTION", e.toString());
                     e.printStackTrace();
                 }
 
                 String resp = response.toString();
-                Log.e("RESPONSE", response.toString());
+                Log.e("JSON_RESPONSE", response.toString());
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.print("Made it to failure");
+                Log.e("ERROR_RESPONSE", error.toString());
                 error.printStackTrace();
             }
         });
-
         mQueue.add(jsonArrayRequest);
     }
 
@@ -387,7 +342,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Funtion for when a win is detected on the board.
      */
     private void win(){
-
         String humanWin = "You are the winner!";
         String compWin = "Computer is the winner";
         TextView winText = (TextView) findViewById(R.id.winner_text);
@@ -397,14 +351,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             winText.setText(compWin);
         buttonToggle = findViewById(R.id.replay);
         buttonToggle.setVisibility(View.VISIBLE);
-
     }
 
     /**
      * Function that displays text when there is a draw and makes replay button visable.
      */
-    private void draw()
-    {
+    private void draw() {
         String winner = "DRAW!!!!";
         TextView winText = (TextView) findViewById(R.id.winner_text);
         winText.setText(winner);
@@ -433,7 +385,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playingBoard[r][c] = imageView;
             }
         }
-
     }
 
     /**
@@ -451,6 +402,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         anim.setFillAfter(true);
         cell.startAnimation(anim);
     }
-
-
 }

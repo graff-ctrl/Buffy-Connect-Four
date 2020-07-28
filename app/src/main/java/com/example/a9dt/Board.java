@@ -139,8 +139,8 @@ public class Board {
 
 
         //Sets right edge of grid
-        if (col + 3 > numCol -1)
-            maxRight = numCol -1;
+        if (col + 3 > numCol - 1)
+            maxRight = numCol - 1;
         else
             maxRight = col + 3;
 
@@ -159,39 +159,31 @@ public class Board {
             maxDown = row + 3;
 
         //Check Left to Right of possible win in grid.
-        for (int j = maxLeft; j <= maxRight; j++){
-            if (j + 3 <= maxRight)
-            {
-                if(board[row][j] == player && j + 3 <= maxRight && board[row][j + 1] == player &&
+        for (int j = maxLeft; j <= maxRight; j++) {
+            if (j + 3 <= maxRight) {
+                if (board[row][j] == player && j + 3 <= maxRight && board[row][j + 1] == player &&
                         board[row][j + 2] == player && board[row][j + 3] == player) {
                     winner = true;
-
                 }
             }
         }
         // Check Up to down for possible win.
-        for (int i = maxUp; i <= maxDown; i++){
-            if (i + 3 <= maxDown)
-            {
+        for (int i = maxUp; i <= maxDown; i++) {
+            if (i + 3 <= maxDown) {
                 int check = board[i][col];
-                if(board[i][col] == player && board[i+1][col] == player &&
-                        board[i + 2][col] == player && board[i + 3][col] == player){
+                if (board[i][col] == player && board[i + 1][col] == player &&
+                        board[i + 2][col] == player && board[i + 3][col] == player) {
                     winner = true;
-
                 }
             }
         }
         // Check diagonally from top left to bottom right for possible win.
         for (int i = maxUp; i <= maxDown; i++) {
             for (int j = maxLeft; j <= maxRight; j++) {
-
-                //if (board[i][j] == player)
-                if (i + 3 <= maxDown && j + 3 <= maxRight)
-                 {
-                    if (board[i][j] == player  && board[i + 1][j + 1] == player
+                if (i + 3 <= maxDown && j + 3 <= maxRight) {
+                    if (board[i][j] == player && board[i + 1][j + 1] == player
                             && board[i + 2][j + 2] == player && board[i + 3][j + 3] == player) {
                         winner = true;
-
                     }
                 }
             }
@@ -199,9 +191,7 @@ public class Board {
         // Check diagonally from bottom left to top right for possible win.
         for (int i = maxDown; i >= maxUp; i--) {
             for (int j = maxLeft; j <= maxRight; j++) {
-
-                //if (board[i][j] == player)
-                if (i - 3 >= maxUp && j + 3 <= maxRight){
+                if (i - 3 >= maxUp && j + 3 <= maxRight) {
                     if (board[i][j] == player && board[i - 1][j + 1] == player
                             && board[i - 2][j + 2] == player && board[i - 3][j + 3] == player) {
                         winner = true;
@@ -261,6 +251,4 @@ public class Board {
 
         return false;
     }
-
-
 }

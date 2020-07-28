@@ -1,47 +1,94 @@
 package com.example.a9dt;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Player class implements a Player parent class and two children classes; Human and Computer
+ */
 public class Player
 {
 
-    private String name;
-    private int score;
-    private int tokenNum;
+    private String name;  //Player name
+    private int score;  //Players score from games
+    private int tokenNum;   //Token number assigned to player
 
-    // Constructor function to set player name
-    public Player(String name)
-    {
+    /**
+     * Player no-arg constructor
+     */
+    public Player () {
+        name = null;
+        score = 0;
+    }
+
+    /**
+     * Player name argument constructor
+     * @param name
+     */
+    public Player (String name) {
         this.name = name;
         this.score = 0;
     }
-    //Constructor function to set player name and score. Assuming player needs to be restored.
-    public Player(String name, int score)
-    {
+
+    /**
+     * Player name and score constructor
+     * @param name
+     * @param score
+     */
+    public Player(String name, int score) {
         this.name = name;
         this.score = score;
-
     }
 
-    public void setScore(int s)
-    {
+    /**
+     * Set score function
+     * @param s
+     */
+    public void setScore(int s) {
         score = s;
     }
-    public void incScore()
-    {
+
+    /**
+     * Increment Score fucntion
+     */
+    public void incScore() {
         score++;
     }
 
+    /**
+     * Function to return score of player.
+     * @return
+     */
+    public int getScore() {
+        return score;
+    }
+    /**
+     *
+     * @param token
+     */
     public void setPlayerToken(int token){
         tokenNum = token;
     }
-    public int getPlayerToken()
-    {
+
+    /**
+     * Function to return player's token.
+     * @return
+     */
+    public int getPlayerToken() {
         return tokenNum;
     }
 }
 
-class Human extends Player
-{
-
+/**
+ * Child class of Player class.
+ */
+class Human extends Player {
+    private String userName;
+    private int level;
 
     public Human(String name) {
         super(name);
@@ -50,12 +97,24 @@ class Human extends Player
     public Human(String name, int score) {
         super(name, score);
     }
+
+    public void setUserName (String userName){
+        this.userName = userName;
+    }
+
+    public String getUserName(){
+        if (userName != null)
+            return userName;
+
+        return "Error";
+    }
 }
 
-class Computer extends Player
-{
+
+class Computer extends Player {
     private int movesSize;
     private int [] moves; //Array of moves from endpoint player
+
 
     public Computer(String name) {
         super(name);
@@ -65,10 +124,11 @@ class Computer extends Player
         super(name, score);
     }
 
-
-    public void setMoves(int [] arr)
-    {
-
+    /**
+     *
+     * @param arr
+     */
+    public void setMoves(int [] arr) {
         this.moves = new int[arr.length];
 
         for (int i = 0; i < moves.length; i++)
