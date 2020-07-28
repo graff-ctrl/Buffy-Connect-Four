@@ -18,13 +18,13 @@ This app is written and tested in Android Studio 4.0 IDE. Classes and interfaces
 
 Reach out to repository owner for access to 9dt. To open this code in Android Studio, being by checking out to the master branch, and then open the /9dt directory in Android Studio. 
 
-####Zip
+###Zip
 Download zip of 9dt, unpack and open in Android Studio
 
-####Git
+###Git
 git clone https://github.com/graff-ctrl/9dt
 
-####SDK Manager
+###SDK Manager
 1. In Android Studio, select Tools -> SDK manager. 
 2. Select Android Settings -> Android SDK
 Make sure the following are selected: 
