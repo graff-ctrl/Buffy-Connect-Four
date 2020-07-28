@@ -5,7 +5,9 @@ A simple DropToken (Connect4) Android app (this repository is set to Private)
 * [Description](##description)
 * [Technologies](##technologies)
 * [Setup](##setup)
-* 
+* [Zip](#zip)
+* [Git](#Git)
+* [SDK Manager](#sdk_manager)
 ## Description
 
 This Andoird app is a simple implementation of a connect 4 game. The player chooses whether they would prefer to go first or second in the sequence of play. The player plays against a playing service at an AWS endpoint. The object of this game is to connect 4 tokens in a row, either horizontally, vertically or diagonally. Each player, human and computer, takes turns dropping their coins onto the board until there is a winner or a draw. The result of the match is displayed and the player is then prompted to replay. 
