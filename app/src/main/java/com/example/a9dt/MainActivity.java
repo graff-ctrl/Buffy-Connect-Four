@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RequestQueue mQueue;
     private Human human;
     private Computer computer;
-    private String baseUrl = "https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?moves=";
+    private String baseUrl = "<ENTER_API_BASE_URL>";
     private String query = "[]";
     private String url;
     private Handler handler;
